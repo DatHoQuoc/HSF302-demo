@@ -11,6 +11,7 @@ public class BookMapper {
                 .id(request.id())
                 .title(request.title())
                 .author(request.authorName())
+                .isbn(request.isbn())
                 .synopsis(request.synopsis())
                 .archived(false)
                 .shareable(request.shareable())
@@ -28,7 +29,7 @@ public class BookMapper {
                 .archived(book.isArchived())
                 .shareable(book.isShareable())
                 .owner(book.getOwner().fullName())
-                .cover(FileUtils.readFileFromLocation(book.getBookCover()))
+                .cover(book.getBookCover())
                 .build();
     }
 
@@ -36,6 +37,7 @@ public class BookMapper {
         return BorrowedBookResponse.builder()
                 .id(history.getBook().getId())
                 .title(history.getBook().getTitle())
+                .cover(history.getBook().getBookCover())
                 .author(history.getBook().getAuthor())
                 .isbn(history.getBook().getIsbn())
                 .rate(history.getBook().getRate())

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +33,11 @@ public class BookService {
     private final FileStorageService fileStorageService;
     public Integer save(BookRequest request, Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
+
         Book book = bookMapper.toBook(request);
+        if(book.getId() == 0) {
+            book.setId(null);
+        }
         book.setOwner(user);
         return bookRepository.save(book).getId();
     }
@@ -43,6 +48,7 @@ public class BookService {
                 .orElseThrow(() -> new EntityNotFoundException("No book found withh id::" + bookId));
     }
 
+    @Transactional
     public PageResponse<BookResponse> findAllBooks(int page, int size, Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
@@ -198,7 +204,7 @@ public class BookService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("No book found with id::" + bookId));
         User user = ((User) connectedUser.getPrincipal());
-        var bookCover = fileStorageService.saveFile(file, user.getId());
+        var bookCover = fileStorageService.saveFile(file, user.getId(), true);
         book.setBookCover(bookCover);
         bookRepository.save(book);
     }

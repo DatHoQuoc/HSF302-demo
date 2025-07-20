@@ -2,6 +2,7 @@ package com.dat.book_network;
 
 import com.dat.book_network.role.Role;
 import com.dat.book_network.role.RoleRepository;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +16,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class BookNetworkApiApplication {
 
 	public static void main(String[] args) {
+		Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+		dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
 		SpringApplication.run(BookNetworkApiApplication.class, args);
+
+
 	}
 
 	@Bean

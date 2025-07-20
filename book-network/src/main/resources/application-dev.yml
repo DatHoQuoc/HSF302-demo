@@ -40,5 +40,14 @@ application:
   file:
     upload:
       photos-output-path: ./uploads
+  frontends:
+    url: ${FRONT_END_URL}
 server:
   port: 8088
+supabase:
+  url: https://cabihztuvxlsaapmsxis.supabase.co
+  service-role-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhYmloenR1dnhsc2FhcG1zeGlzIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTA2NjMxMSwiZXhwIjoyMDY2NjQyMzExfQ.JmTM3UrKfE049cJStc-a8GHCRYk3dMzq9oFSnpwKFjs
+  public-bucket:
+    name: book-image
+  private-bucket:
+    name: book-content
