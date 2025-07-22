@@ -41,6 +41,7 @@ public class User implements UserDetails, Principal {
     private String password;
     private boolean accountLocked;
     private boolean enabled;
+    private String imageUrl;
 
     @CreatedDate
     @Column(updatable = false, nullable = false)
