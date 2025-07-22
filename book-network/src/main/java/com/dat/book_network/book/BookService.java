@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -49,13 +50,18 @@ public class BookService {
     }
 
     @Transactional
-    public PageResponse<BookResponse> findAllBooks(int page, int size, Authentication connectedUser) {
+    public PageResponse<BookResponse> findAllBooks(int page, int size,BookSearchRequest request,Authentication connectedUser) {
+
         User user = (User) connectedUser.getPrincipal();
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<Book> books = bookRepository.findAllDisplayableBooks(pageable, user.getId());
+
+        Specification<Book> spec = BookSpecification.build(request);
+        Page<Book> books = bookRepository.findAll(spec, pageable);
+
         List<BookResponse> bookResponses = books.stream()
                 .map(bookMapper::toBookResponse)
                 .toList();
+
         return new PageResponse<>(
                 bookResponses,
                 books.getNumber(),

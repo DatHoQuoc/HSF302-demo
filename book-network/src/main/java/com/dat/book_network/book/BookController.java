@@ -36,9 +36,18 @@ public class BookController {
     public ResponseEntity<PageResponse<BookResponse>> findAllBooks(
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
+            @RequestParam(required = false) Integer id,
+            @RequestParam(required = false) String searchText,
+            @RequestParam(required = false) Boolean archived,
+            @RequestParam(required = false) Boolean shareable,
             Authentication connectedUser
     ){
-        return ResponseEntity.ok(service.findAllBooks(page,size,connectedUser));
+        BookSearchRequest request = new BookSearchRequest();
+        request.setId(id);
+        request.setKeyword(searchText);
+        request.setArchived(archived);
+        request.setShareable(shareable);
+        return ResponseEntity.ok(service.findAllBooks(page,size, request, connectedUser));
     }
 
     @GetMapping("/owner")
