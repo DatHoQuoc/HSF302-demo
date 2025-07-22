@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -82,7 +83,7 @@ public class BookController {
         return ResponseEntity.ok(service.updateArchivedStatus(bookId, connectedUser));
     }
 
-    @PostMapping("/borrow/{book-id}")
+    @PostMapping(value = "/borrow/{book-id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Integer> borrowBook(
             @PathVariable("book-id") Integer bookId,
             Authentication connectedUser
