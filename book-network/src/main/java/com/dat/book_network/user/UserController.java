@@ -25,4 +25,9 @@ public class UserController {
         userService.updateProfile(request);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<UserDashboardResponse> getUserDashboard() {
+        return ResponseEntity.ok(userService.getUserDashboard());
+    }
 }
