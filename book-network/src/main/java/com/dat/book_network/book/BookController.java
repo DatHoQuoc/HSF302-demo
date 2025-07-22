@@ -62,9 +62,11 @@ public class BookController {
     public ResponseEntity<PageResponse<BorrowedBookResponse>> findAllBorrowedBooks(
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
+            @RequestParam(required = false) Integer bookId,
+            @RequestParam(required = false, defaultValue = "") String keyword,
             Authentication connectedUser
     ){
-        return ResponseEntity.ok(service.findAllBorrowedBooks(page,size,connectedUser));
+        return ResponseEntity.ok(service.findAllBorrowedBooks(page,size, bookId, keyword, connectedUser));
     }
 
     @GetMapping("/returned")
@@ -72,7 +74,7 @@ public class BookController {
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
             @RequestParam(name = "id", required = false) Integer bookId,
-            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "keyword", defaultValue = "",required = false) String keyword,
             @RequestParam(name = "returnApproved", required = false) Boolean returnApproved,
             Authentication connectedUser
     ){

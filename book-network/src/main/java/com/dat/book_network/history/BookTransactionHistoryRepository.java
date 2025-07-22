@@ -53,12 +53,31 @@ public interface BookTransactionHistoryRepository extends JpaRepository<BookTran
             @Param("returnApproved") Boolean returnApproved
     );
 
-    @Query("""
+//    @Query("""
+//        SELECT history
+//                FROM BookTransactionHistory history
+//                        WHERE history.user.id = :userId
+//        """)
+//    Page<BookTransactionHistory> findAllBorrowedBooks(Pageable pageable, Integer userId);
+        @Query("""
         SELECT history
-                FROM BookTransactionHistory history
-                        WHERE history.user.id = :userId
+        FROM BookTransactionHistory history
+        WHERE history.user.id = :userId
+          AND (:bookId IS NULL OR history.book.id = :bookId)
+          AND (:keyword IS NULL OR
+               LOWER(history.book.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+               LOWER(history.book.author) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+               LOWER(history.book.isbn) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+               LOWER(history.book.synopsis) LIKE LOWER(CONCAT('%', :keyword, '%'))
+             )
+          AND history.returned = false
         """)
-    Page<BookTransactionHistory> findAllBorrowedBooks(Pageable pageable, Integer userId);
+        Page<BookTransactionHistory> findAllBorrowedBooks(
+        Pageable pageable,
+            @Param("userId") Integer userId,
+            @Param("bookId") Integer bookId,
+            @Param("keyword") String keyword
+        );
 
     @Query("""
         SELECT history
