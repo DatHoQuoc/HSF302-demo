@@ -38,4 +38,6 @@ public class BaseEntity {
     @LastModifiedBy
     @Column(insertable = false)
     private Integer LastModifiedBy;
+
+
 }
