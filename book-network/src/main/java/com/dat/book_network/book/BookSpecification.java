@@ -12,6 +12,10 @@ public class BookSpecification {
         return (root, query, cb) -> cb.equal(root.get("owner").get("id"), ownerId);
     }
 
+    public static Specification<Book> withoutOwnerId(Integer ownerId) {
+        return (root, query, cb) -> cb.notEqual(root.get("owner").get("id"), ownerId);
+    }
+
     public static Specification<Book> build(BookSearchRequest request) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -45,5 +49,13 @@ public class BookSpecification {
         };
     }
 
+    public static Specification<Book> buildAndExcludeOwner(BookSearchRequest request, Integer ownerIdToExclude) {
+        Specification<Book> baseSpec = build(request);
+
+        if (ownerIdToExclude != null) {
+            return baseSpec.and(withoutOwnerId(ownerIdToExclude));
+        }
+        return baseSpec;
+    }
 
 }
