@@ -55,7 +55,7 @@ public class BookService {
         User user = (User) connectedUser.getPrincipal();
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Specification<Book> spec = BookSpecification.build(request);
+        Specification<Book> spec = BookSpecification.buildAndExcludeOwner(request, user.getId());
         Page<Book> books = bookRepository.findAll(spec, pageable);
 
         List<BookResponse> bookResponses = books.stream()
