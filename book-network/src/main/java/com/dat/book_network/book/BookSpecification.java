@@ -52,9 +52,19 @@ public class BookSpecification {
     public static Specification<Book> buildAndExcludeOwner(BookSearchRequest request, Integer ownerIdToExclude) {
         Specification<Book> baseSpec = build(request);
 
+        // Thêm điều kiện exclude owner
         if (ownerIdToExclude != null) {
-            return baseSpec.and(withoutOwnerId(ownerIdToExclude));
+            baseSpec = baseSpec.and(withoutOwnerId(ownerIdToExclude));
         }
+
+        // Thêm điều kiện NOT archived
+        // Nếu bạn muốn mặc định chỉ tìm sách không bị archived
+        baseSpec = baseSpec.and((root, query, cb) -> cb.equal(root.get("archived"), false));
+
+        // Thêm điều kiện NOT shareable
+        // Nếu bạn muốn mặc định chỉ tìm sách có thể chia sẻ (shareable = true)
+        baseSpec = baseSpec.and((root, query, cb) -> cb.equal(root.get("shareable"), true));
+
         return baseSpec;
     }
 

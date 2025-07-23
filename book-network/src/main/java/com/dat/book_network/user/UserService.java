@@ -51,7 +51,7 @@ public class UserService {
         if (dateOfBirth != null) {
             user.setDateOfBirth(dateOfBirth);
         }
-        if(file != null && file.isEmpty()) {
+        if(file != null && !file.isEmpty()) {
             Integer userId = user.getId();
             boolean isPublic = true;
             String profilePictureUrl = fileStorageService.saveFile(file, userId, isPublic);

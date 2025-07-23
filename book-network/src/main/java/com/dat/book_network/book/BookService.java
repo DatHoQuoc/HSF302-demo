@@ -47,7 +47,9 @@ public class BookService {
             Optional<Book> old = bookRepository.findById(book.getId());
             Book oldBook = old.get();
             String cover = oldBook.getBookCover();
+            String content = oldBook.getContentFilePath();
             book.setBookCover(cover);
+            book.setContentFilePath(content);
         }
 
         book.setOwner(user);
