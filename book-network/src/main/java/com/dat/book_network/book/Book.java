@@ -34,6 +34,7 @@ public class Book extends BaseEntity {
     private String bookCover;
     private boolean archived = false;
     private boolean shareable;
+    private String contentFilePath;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

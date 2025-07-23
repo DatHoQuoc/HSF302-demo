@@ -1,10 +1,12 @@
 package com.dat.book_network.user;
 
 import com.dat.book_network.book.BookRepository;
+import com.dat.book_network.file.FileStorageService;
 import com.dat.book_network.history.BookTransactionHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,7 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final BookTransactionHistoryRepository historyRepository;
-
+    private final FileStorageService fileStorageService;
 
     public UserProfileResponse getProfile() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -26,6 +28,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return UserProfileResponse.builder()
+                .id(user.getId().toString())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
@@ -34,22 +37,29 @@ public class UserService {
                 .build();
     }
 
-    public void updateProfile(UpdateUserProfileRequest request) {
+    public void updateProfile(String firstName, String lastName, LocalDate dateOfBirth, MultipartFile file) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (request.getFirstName() != null) {
-            user.setFirstName(request.getFirstName());
+        if (firstName!= null) {
+            user.setFirstName(firstName);
         }
-        if (request.getLastName() != null) {
-            user.setLastName(request.getLastName());
+        if (lastName != null) {
+            user.setLastName(lastName);
         }
-        if (request.getDateOfBirth() != null) {
-            user.setDateOfBirth(request.getDateOfBirth());
+        if (dateOfBirth != null) {
+            user.setDateOfBirth(dateOfBirth);
         }
-        if (request.getImageUrl() != null) {
-            user.setImageUrl(request.getImageUrl());
+        if(file != null && file.isEmpty()) {
+            Integer userId = user.getId();
+            boolean isPublic = true;
+            String profilePictureUrl = fileStorageService.saveFile(file, userId, isPublic);
+            if (profilePictureUrl != null) {
+                user.setImageUrl(profilePictureUrl);
+            } else {
+                System.err.println("Failed to upload profile picture for user: " + email);
+            }
         }
 
         userRepository.save(user);

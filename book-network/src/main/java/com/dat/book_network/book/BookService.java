@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +43,13 @@ public class BookService {
         Book book = bookMapper.toBook(request);
         if(book.getId() == 0) {
             book.setId(null);
+        }else{
+            Optional<Book> old = bookRepository.findById(book.getId());
+            Book oldBook = old.get();
+            String cover = oldBook.getBookCover();
+            book.setBookCover(cover);
         }
+
         book.setOwner(user);
         return bookRepository.save(book).getId();
     }
